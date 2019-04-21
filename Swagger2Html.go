@@ -29,22 +29,37 @@ func callEndpoint(endpoint string) map[string]interface{} {
 	return nil
 }
 
+func prettyJson(jsonData map[string]interface{}) string {
+
+	bytes, err := json.MarshalIndent(jsonData, "", "   ")
+	if err == nil {
+		return string(bytes)
+	}
+
+	return fmt.Sprintf("Error %s", err)
+}
+
 
 func main () {
 
 	hostPtr := flag.String("host", "petstore.swagger.io", "Swagger Host")
 	protocolPtr := flag.String("protocol", "https", "Protocol")
+	verbosePtr := flag.Bool("verbose", true, "Verbose output")
 
 	flag.Parse();
 
-	fmt.Println("Host:", *hostPtr)
-	fmt.Println("Protocol:", *protocolPtr)
-
 	endPoint := buildEndpoint(*protocolPtr, *hostPtr)
 
-	fmt.Println("Endpoint: ", endPoint)
+	jsonData := callEndpoint(endPoint)
 
-	fmt.Println("Data: ", callEndpoint(endPoint))
+	if (*verbosePtr) {
+		fmt.Println("Host:", *hostPtr)
+		fmt.Println("Protocol:", *protocolPtr)
+
+		fmt.Println("Endpoint: ", endPoint)
+
+		fmt.Println("Data: ", prettyJson(jsonData))
+	}
 }
 
 
