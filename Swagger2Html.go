@@ -5,9 +5,11 @@ import "fmt"
 import "encoding/json"
 import "io/ioutil"
 import "net/http"
+import "html/template"
+import "os"
 
-func buildEndpoint(protocol string, host string) string {
-	return fmt.Sprintf("%s://%s/v2/swagger.json", protocol, host)
+func buildEndpoint(scheme string, host string) string {
+	return fmt.Sprintf("%s://%s/v2/swagger.json", scheme, host)
 }
 
 func callEndpoint(endpoint string) map[string]interface{} {
@@ -37,27 +39,39 @@ func prettyJson(jsonData map[string]interface{}) string {
 	return fmt.Sprintf("Error %s", err)
 }
 
+func generateSwaggerHtml(jsonData map[string]interface{}, swaggerHtmlTemplate string) {
+	t, err := template.ParseFiles(swaggerHtmlTemplate)
+
+	if err == nil {
+		t.Execute(os.Stdout, jsonData)
+	}
+}
 
 func main () {
 
 	hostPtr := flag.String("host", "petstore.swagger.io", "Swagger Host")
-	protocolPtr := flag.String("protocol", "https", "Protocol")
-	verbosePtr := flag.Bool("verbose", true, "Verbose output")
+	schemePtr := flag.String("scheme", "https", "Scheme")
+	swaggerHtmlTemplatePtr := flag.String("template", "swaggerTemplate.html", "Swagger HTML template")
+	verbosePtr := flag.Bool("verbose", false, "Verbose output")
 
 	flag.Parse();
 
-	endPoint := buildEndpoint(*protocolPtr, *hostPtr)
+	endPoint := buildEndpoint(*schemePtr, *hostPtr)
 
 	jsonData := callEndpoint(endPoint)
 
 	if (*verbosePtr) {
 		fmt.Println("Host:", *hostPtr)
-		fmt.Println("Protocol:", *protocolPtr)
+		fmt.Println("Scheme:", *schemePtr)
 
 		fmt.Println("Endpoint: ", endPoint)
 
+		fmt.Println("Swagger HTML Template", *swaggerHtmlTemplatePtr)
+
 		fmt.Println("Data: ", prettyJson(jsonData))
 	}
+
+	generateSwaggerHtml(jsonData, *swaggerHtmlTemplatePtr)
 }
 
 
