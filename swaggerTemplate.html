@@ -59,44 +59,44 @@ flex-wrap: wrap;
 				<a href="{{.externalDocs.url}}">{{.externalDocs.description}}</a>
 			</div>
 
-			{{ range $key, $value := .paths }}
+			{{ range $path, $pathRecord := .paths }}
 				<div class="card">
 
-					{{ if $value.post }} 
-   					POST {{ $key }}
-					Consumes: {{ range $value.post.consumes}}{{ . }} {{end}}
-					Produces: {{ range $value.post.produces}}{{ . }} {{end}}
-					Operation: {{ $value.post.operationId }}
-					Description: {{ $value.post.description }}
+					{{ if $pathRecord.post }} 
+   					POST {{ $path }}
+					Consumes: {{ range $pathRecord.post.consumes}}{{ . }} {{end}}
+					Produces: {{ range $pathRecord.post.produces}}{{ . }} {{end}}
+					Operation: {{ $pathRecord.post.operationId }}
+					Description: {{ $pathRecord.post.description }}
 
-					Parameters: {{ range $value.post.parameters}} 
+					Parameters: {{ range $pathRecord.post.parameters}} 
 							Description: {{ .description }}
 							In: {{ .in }}
 							Required: {{ .required }}
 							Schema: {{ .schema }} 
 							{{ end }}
 
-					Responses: {{ range $key1, $value1 := $value.post.responses }}
-							Return code: {{ $key1 }}
-							Description {{ $value1.description }}
+					Responses: {{ range $httpCode, $response := $pathRecord.post.responses }}
+							Return code: {{ $httpCode }}
+							Description {{ $response.description }}
 							{{ end }}
 					{{ end }} 
 
-					{{ if $value.get }} 
-   					GET {{ $key }}
-					Consumes: {{ range $value.get.consumes}}{{ . }} {{end}}
-					Produces: {{ range $value.get.produces}}{{ . }} {{end}}
-					Operation: {{ $value.get.operationId }}
-					Description: {{ $value.get.description }}
-					Parameters: {{ range $value.get.parameters}} 
+					{{ if $pathRecord.get }} 
+   					GET {{ $path }}
+					Consumes: {{ range $pathRecord.get.consumes}}{{ . }} {{end}}
+					Produces: {{ range $pathRecord.get.produces}}{{ . }} {{end}}
+					Operation: {{ $pathRecord.get.operationId }}
+					Description: {{ $pathRecord.get.description }}
+					Parameters: {{ range $pathRecord.get.parameters}} 
 							Description: {{ .description }}
 							In: {{ .in }}
 							Required: {{ .required }}
 							Schema: {{ .schema }} 
 							{{ end }}
-					Responses: {{ range $key1, $value1 := $value.get.responses }}
-							Return code: {{ $key1 }}
-							Description {{ $value1.description }}
+					Responses: {{ range $httpCode, $response := $pathRecord.get.responses }}
+							Return code: {{ $httpCode }}
+							Description {{ $response.description }}
 							{{ end }}
 					{{ end }} 
 				</div>
