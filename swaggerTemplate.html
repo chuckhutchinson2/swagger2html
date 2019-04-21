@@ -45,11 +45,63 @@ flex-wrap: wrap;
 	<body>
 		<div id="mainbox">
 			<div class="card">
+				Title: {{.info.title}}
+				Version: {{.info.version}}
 				Contact: {{.info.contact.email}}
 				Description: {{.info.desription}}
 				License: {{.info.license.name}} {{.info.license.url}}
-				
 			</div>
+
+			<div class="card">
+				Host: {{.host}}
+				Basepath: {{.basePath}}
+				Schemes: {{range .schemes}}{{ . }} {{end}}
+				<a href="{{.externalDocs.url}}">{{.externalDocs.description}}</a>
+			</div>
+
+			{{ range $key, $value := .paths }}
+				<div class="card">
+
+					{{ if $value.post }} 
+   					POST {{ $key }}
+					Consumes: {{ range $value.post.consumes}}{{ . }} {{end}}
+					Produces: {{ range $value.post.produces}}{{ . }} {{end}}
+					Operation: {{ $value.post.operationId }}
+					Description: {{ $value.post.description }}
+
+					Parameters: {{ range $value.post.parameters}} 
+							Description: {{ .description }}
+							In: {{ .in }}
+							Required: {{ .required }}
+							Schema: {{ .schema }} 
+							{{ end }}
+
+					Responses: {{ range $key1, $value1 := $value.post.responses }}
+							Return code: {{ $key1 }}
+							Description {{ $value1.description }}
+							{{ end }}
+					{{ end }} 
+
+					{{ if $value.get }} 
+   					GET {{ $key }}
+					Consumes: {{ range $value.get.consumes}}{{ . }} {{end}}
+					Produces: {{ range $value.get.produces}}{{ . }} {{end}}
+					Operation: {{ $value.get.operationId }}
+					Description: {{ $value.get.description }}
+					Parameters: {{ range $value.get.parameters}} 
+							Description: {{ .description }}
+							In: {{ .in }}
+							Required: {{ .required }}
+							Schema: {{ .schema }} 
+							{{ end }}
+					Responses: {{ range $key1, $value1 := $value.get.responses }}
+							Return code: {{ $key1 }}
+							Description {{ $value1.description }}
+							{{ end }}
+					{{ end }} 
+				</div>
+			{{ end }}
+
 		</div>
 	</body>
 </html>
