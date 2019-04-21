@@ -2,11 +2,9 @@ package main
 
 import "flag"
 import "fmt"
-// import "bytes"
 import "encoding/json"
 import "io/ioutil"
 import "net/http"
-
 
 func buildEndpoint(protocol string, host string) string {
 	return fmt.Sprintf("%s://%s/v2/swagger.json", protocol, host)
