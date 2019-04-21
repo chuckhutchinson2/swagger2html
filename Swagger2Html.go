@@ -53,18 +53,23 @@ func main () {
 	schemePtr := flag.String("scheme", "https", "Scheme")
 	swaggerHtmlTemplatePtr := flag.String("template", "swaggerTemplate.html", "Swagger HTML template")
 	verbosePtr := flag.Bool("verbose", false, "Verbose output")
+	endpointPtr := flag.String("endpoint", "", "Endpoint override")
 
 	flag.Parse();
 
-	endPoint := buildEndpoint(*schemePtr, *hostPtr)
+	endpoint := buildEndpoint(*schemePtr, *hostPtr)
 
-	jsonData := callEndpoint(endPoint)
+	if len(*endpointPtr) > 0 {
+		endpoint = *endpointPtr
+	}
+
+	jsonData := callEndpoint(endpoint)
 
 	if (*verbosePtr) {
 		fmt.Println("Host:", *hostPtr)
 		fmt.Println("Scheme:", *schemePtr)
 
-		fmt.Println("Endpoint: ", endPoint)
+		fmt.Println("Endpoint: ", endpoint)
 
 		fmt.Println("Swagger HTML Template", *swaggerHtmlTemplatePtr)
 
