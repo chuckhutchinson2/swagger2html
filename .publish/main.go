@@ -1,4 +1,4 @@
-package main
+package swagger2html
 
 import "flag"
 import "fmt"
