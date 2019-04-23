@@ -1,0 +1,1 @@
+../Swagger2Html -server=true -template=swaggerTemplate.html -httpPort=:9090
