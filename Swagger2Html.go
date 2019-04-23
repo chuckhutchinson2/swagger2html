@@ -47,6 +47,20 @@ func generateSwaggerHtml(jsonData map[string]interface{}, swaggerHtmlTemplate st
 	}
 }
 
+type jsonTemplateHandler struct {
+    jsonData map[string]interface{}
+    templateFilename string
+}
+
+func (h *jsonTemplateHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+    t, err := template.ParseFiles(h.templateFilename)
+
+	if err == nil {
+		t.Execute(w, h.jsonData)
+	}
+}
+
+
 func main () {
 
 	hostPtr := flag.String("host", "petstore.swagger.io", "Swagger Host")
@@ -54,6 +68,9 @@ func main () {
 	swaggerHtmlTemplatePtr := flag.String("template", "swaggerTemplate.html", "Swagger HTML template")
 	verbosePtr := flag.Bool("verbose", false, "Verbose output")
 	endpointPtr := flag.String("endpoint", "", "Endpoint override")
+	prettyPrintPtr := flag.Bool("pretty", false, "Pretty print JSON")
+	webServerPtr := flag.Bool("server", false, "Run Web Server")
+	httpPortPtr := flag.String("httpPort", ":8080", "WebServer")
 
 	flag.Parse();
 
@@ -72,11 +89,17 @@ func main () {
 		fmt.Println("Endpoint: ", endpoint)
 
 		fmt.Println("Swagger HTML Template", *swaggerHtmlTemplatePtr)
-
-		fmt.Println("Data: ", prettyJson(jsonData))
 	}
 
-	generateSwaggerHtml(jsonData, *swaggerHtmlTemplatePtr)
+	if *webServerPtr {
+		fmt.Println("Running web server running on port", *httpPortPtr)
+		http.Handle("/", &jsonTemplateHandler{jsonData: jsonData, templateFilename: *swaggerHtmlTemplatePtr})
+    	http.ListenAndServe(*httpPortPtr, nil)
+	} else if *prettyPrintPtr {
+		fmt.Println(prettyJson(jsonData))
+	} else {
+		generateSwaggerHtml(jsonData, *swaggerHtmlTemplatePtr)
+	}
 }
 
 
