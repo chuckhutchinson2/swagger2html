@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>{{.info.title}} - {{.info.version}}</title>
+		<style>
+.card{
+width: 99%;
+min-width: 250px;
+border: 1px solid gray;
+box-shadow: 1px 1px 3px #888;
+border-top: 10px solid green;
+box-sizing: border-box;
+padding: 10px;
+margin: 10px;
+}
+
+img{
+  border-radius: 50%;
+  width: 70px;
+  margin: 10px;
+}
+
+h1{
+  font-weight: lighter;
+  margin-left: 100px;
+  margin-top: -70px;
+}
+
+p{
+  margin: 10px;
+  font-family: segoe ui;
+  line-height: 1.4em;
+  font-size: 1.2em;
+}
+
+#mainbox{
+  font-family: calibri;
+  box-sizing: border-box;
+  justify-content: center;
+  display: block;
+}
+
+.value {
+	font-style: italic;
+}
+
+.title {
+	font-weight: bold;
+}
+
+.sidebyside {
+	display: inline-block;
+}
+
+
+.parameters {
+  padding-top: 5px;
+}
+
+.parameters div {
+  padding-left: 50px;
+}
+
+.responses {
+  padding-top: 5px;
+}
+
+.responses div {
+  padding-left: 50px;
+}
+
+.httpcode {
+  width: 100px;
+}
+
+.name {
+  width: 100px;
+}
+
+.type {
+  width: 50px;
+}
+
+.in {
+  width: 50px;
+}
+
+.description {
+}
+
+</style>
+	</head>
+	<body>
+		<div id="mainbox">
+			<div class="card">
+				<div class="line"><span class="title">Title:</span><span class="value"> {{.info.title}}</span></div>
+				<div class="line"><span class="title">Version:</span><span class="value"> {{.info.version}}</span></div>
+				<div class="line"><span class="title">Contact:</span><span class="value"> {{.info.contact.email}}</span></div>
+				<div class="line"><span class="title">Description:</span><span class="value"> {{.info.description}}</span></div>
+				<div class="line"><span class="title">License:</span><span class="value"> {{.info.license.name}} {{.info.license.url}}</span></div>
+			</div>
+
+			<div class="card">
+				<div class="line"><span class="title">Host:</span><span class="value"> {{.host}}</span></div>
+				<div class="line"><span class="title">Basepath:</span><span class="value"> {{.basePath}}</span></div>
+				<div class="line"><span class="title">Schemes:</span><span class="value"> {{range .schemes}}{{ . }} {{end}}</span></div>
+				<div class="line"><span class="title"><a href="{{.externalDocs.url}}">{{.externalDocs.description}}</a></span></div>
+			</div>
+
+			{{ range $path, $pathRecord := .paths }}
+
+				{{ if $pathRecord.post }} 
+					<div class="card">
+   						<div class="line"><span class="title">POST</span><span class="value"> {{ $path }}</span></div>
+						<div class="line"><span class="title">Operation:</span><span class="value"> {{ $pathRecord.post.operationId }}</span></div>
+						<div class="line"><span class="title">Description:</span><span class="value"> {{ $pathRecord.post.description }}</span></div>
+						<div class="line"><span class="title">Consumes:</span><span class="value"> {{ range $pathRecord.post.consumes}}{{ . }} {{end}}</span></div>
+						<div class="line"><span class="title">Produces:</span><span class="value"> {{ range $pathRecord.post.produces}}{{ . }} {{end}}</span></div>
+
+						<div class="parameters">	
+							<div class="line"><span class="title">Parameters</span></div>
+								<div class="line">
+									<div class="name sidebyside title">Name</div>
+									<div class="type sidebyside title">Type</div>
+									<div class="in sidebyside title">In</div>
+									<div class="description sidebyside title">Description</div>
+								</div>
+							{{ range $pathRecord.post.parameters}}
+								<div class="line">
+									<div class="name sidebyside line"><span class="value"> {{ .name }}</span></div>
+									<div class="type sidebyside line"><span class="value"> {{ .items.type }}</span></div>
+									<div class="in sidebyside line"><span class="value"> {{ .in }}</span></div>
+									<div class="description sidebyside line"><span class="value"> {{ .description }} </span></div>
+								</div>
+							{{ end }}
+						</div>
+
+						<div class="responses">
+							<div class="line"><span class="title">Responses</span></div>
+								<div class="line">
+									<div class="httpcode sidebyside title">HttpCode</div>
+									<div class="description sidebyside title">Description</div>
+								</div>
+							{{ range $httpCode, $response := $pathRecord.post.responses }}
+								<div class="line">
+									<div class="httpcode sidebyside"><span class="value"> {{ $httpCode }}</span></div>
+									<div class="description sidebyside"><span class="value"> {{ $response.description }}</span></div>
+								</div>
+							{{ end }}
+						</div>
+					</div>
+				{{ end }} 
+
+				{{ if $pathRecord.get }} 
+					<div class="card">
+   						<div class="line"><span class="title">GET {{ $path }}</span></div>
+						<div class="line"><span class="title">Operation:</span><span class="value"> {{ $pathRecord.get.operationId }}</span></div>
+						<div class="line"><span class="title">Description:</span><span class="value"> {{ $pathRecord.get.description }}</span></div>
+						<div class="line"><span class="title">Consumes:</span><span class="value"> {{ range $pathRecord.get.consumes}}{{ . }} {{end}}</span></div>
+						<div class="line"><span class="title">Produces:</span><span class="value"> {{ range $pathRecord.get.produces}}{{ . }} {{end}}</span></div>
+
+						<div class="parameters">	
+							<div class="line"><span class="title">Parameters</span></div>
+								<div class="line">
+									<div class="name sidebyside title">Name</div>
+									<div class="type sidebyside title">Type</div>
+									<div class="in sidebyside title">In</div>
+									<div class="description sidebyside title">Description</div>
+								</div>
+							{{ range $pathRecord.get.parameters}}
+								<div class="line">
+									<div class="name sidebyside line"><span class="value"> {{ .name }}</span></div>
+									<div class="type sidebyside line"><span class="value"> {{ .items.type }}</span></div>
+									<div class="in sidebyside line"><span class="value"> {{ .in }}</span></div>
+									<div class="description sidebyside line"><span class="value"> {{ .description }} </span></div>
+								</div>
+							{{ end }}
+						</div>
+
+						<div class="responses">
+							<div class="line"><span class="title">Responses</span></div>
+								<div class="line">
+									<div class="httpcode sidebyside title">HttpCode</div>
+									<div class="description sidebyside title">Description</div>
+								</div>
+							{{ range $httpCode, $response := $pathRecord.get.responses }}
+								<div class="line">
+									<div class="httpcode sidebyside"><span class="value"> {{ $httpCode }}</span></div>
+									<div class="description sidebyside"><span class="value"> {{ $response.description }}</span></div>
+								</div>
+							{{ end }}
+						</div>
+					</div>
+				{{ end }} 
+			{{ end }}
+
+		</div>
+	</body>
+</html>
