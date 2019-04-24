@@ -1,1 +1,1 @@
-../Swagger2Html -server=true -template=swaggerTemplate.html -httpPort=:9090
+../Json2Html -server=true -template=swaggerTemplate.html -endpoint=https://petstore.swagger.io/v2/swagger.json -httpPort=:8080
